@@ -1,0 +1,50 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  creationTimestamp: null
+  name: test-component-oxlj
+  namespace: e2e-test-pipelines-iikp
+spec:
+  params:
+  - name: git-revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      annotations:
+        build.appstudio.openshift.io/application: test-app-qlvh
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: test-component-oxlj
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      creationTimestamp: null
+      generateName: test-component-oxlj-
+      labels:
+        build.appstudio.openshift.io/application: test-app-qlvh
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: test-component-oxlj
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      namespace: e2e-test-pipelines-iikp
+    spec:
+      params:
+      - name: git-url
+        value: https://github.com/redhat-appstudio-qe/devfile-sample-python-basic
+      - name: output-image
+        value: quay.io/psturc/test-images:f3cb266e40884b4ca0db1d70d0389783-$(tt.params.git-revision)
+      - name: dockerfile
+        value: docker/Dockerfile
+      - name: path-context
+        value: .
+      pipelineRef:
+        bundle: quay.io/redhat-appstudio/hacbs-templates-bundle:510fa6e99f1fa1f816c96354bbaf1ad155c6d9c3
+        name: docker-build
+      workspaces:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: appstudio
+        subPath: test-component-oxlj/$(tt.params.git-revision)
+    status: {}
+status: {}

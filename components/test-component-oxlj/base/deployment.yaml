@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/created-by: application-service
+    app.kubernetes.io/instance: test-component-oxlj
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: test-component-oxlj
+    app.kubernetes.io/part-of: test-app-qlvh
+  name: test-component-oxlj
+  namespace: e2e-test-pipelines-iikp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: test-component-oxlj
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: test-component-oxlj
+    spec:
+      containers:
+      - image: quay.io/psturc/test-images:f3cb266e40884b4ca0db1d70d0389783
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        name: container-image
+        ports:
+        - containerPort: 8081
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          tcpSocket:
+            port: 8081
+        resources: {}
+status: {}
